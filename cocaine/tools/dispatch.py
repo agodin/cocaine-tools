@@ -244,12 +244,15 @@ class PluginLoader(object):
 
 class Context(object):
     def __init__(self, host, port, timeout, **kwargs):
+        self._configurator = Configurator()
+        self._configurator.update()
+
+        if 'custom_port' in self._configurator.config:
+            port = self._configurator.config['custom_port']
+
         self._endpoints = [(host, port)]
         self._timeout = timeout
         self._options = kwargs
-
-        self._configurator = Configurator()
-        self._configurator.update()
 
         self._repo = PooledServiceFactory(endpoints=self._endpoints)
 
